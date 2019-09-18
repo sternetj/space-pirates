@@ -1,9 +1,10 @@
 import * as PIXI from "pixi.js";
-import * as images from "../assets";
 import { Ship } from "./ship";
 import { Sky } from "./sky";
 import { SceneryRocks } from "./scenery-rocks";
 import { SpaceTrails } from "./space-trails";
+
+import Ambiance from "./sound-player";
 
 const app = new PIXI.Application();
 
@@ -17,11 +18,12 @@ const sky = new Sky();
 const rocks = new SceneryRocks();
 const spaceTrails = new SpaceTrails();
 
-
 app.stage.addChild(...sky.children);
 app.stage.addChild(...rocks.children);
 app.stage.addChild(...spaceTrails.children);
 app.stage.addChild(...ship.children);
+
+Ambiance.shipSounds.play({ loop: true, volume: 0.3 });
 
 app.ticker.add(delta => {
   ship.update();
@@ -31,4 +33,3 @@ app.ticker.add(delta => {
 });
 
 export default app;
-
