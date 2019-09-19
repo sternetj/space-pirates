@@ -4,8 +4,6 @@ import { Sky } from "./sky";
 import { SceneryRocks } from "./scenery-rocks";
 import { SpaceTrails } from "./space-trails";
 
-import SoundPlayer from "./sound-player";
-
 const app = new PIXI.Application();
 
 app.renderer.view.style.position = "absolute";
@@ -22,8 +20,6 @@ app.stage.addChild(...sky.children);
 app.stage.addChild(...rocks.children);
 app.stage.addChild(...spaceTrails.children);
 app.stage.addChild(...ship.children);
-
-SoundPlayer.ship.play({ loop: true, volume: 0.3 });
 
 app.ticker.add(delta => {
   ship.update();
