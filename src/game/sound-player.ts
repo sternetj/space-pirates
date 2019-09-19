@@ -2,7 +2,7 @@ import Sound from "pixi-sound";
 import { ship } from "../assets/sounds/ship";
 
 export default {
-  shipSounds: Sound.Sound.from(_base64ToArrayBuffer(ship))
+  ship: Sound.Sound.from(_base64ToArrayBuffer(ship))
 };
 
 function _base64ToArrayBuffer(base64) {
