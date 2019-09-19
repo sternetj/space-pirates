@@ -1,6 +1,8 @@
 import Sound from "pixi-sound";
 import { ship } from "../assets/sounds/ship";
-
+/*
+  Sounds from https://www.zapsplat.com
+*/
 export default {
   ship: Sound.Sound.from(_base64ToArrayBuffer(ship))
 };
