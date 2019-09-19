@@ -26,7 +26,7 @@ export class Ship {
     const ship = PIXI.Sprite.from(images.ship);
     ship.scale = new PIXI.Point(0.3, 0.3);
 
-    ship.y = window.innerHeight - ship.height - 50;
+    ship.y = window.innerHeight - 220;
     ship.x = (window.innerWidth - ship.width) / 2;
 
     return ship;
