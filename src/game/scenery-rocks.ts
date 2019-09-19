@@ -9,29 +9,31 @@ export class SceneryRocks {
     this.children = [
       this.createSkySection(),
       this.createSkySection(-window.innerHeight),
-      this.createSkySection(-2 * window.innerHeight),
+      this.createSkySection(-2 * window.innerHeight)
     ];
   }
 
   public update() {
-    this.children.forEach(this.updateSkySection)
+    this.children.forEach(this.updateSkySection);
   }
 
   private updateSkySection = (sky: PIXI.Container) => {
     sky.y += 4;
 
     if (sky.y > window.innerHeight) {
-      sky.y = -2 * window.innerHeight
+      sky.y = -2 * window.innerHeight;
       sky.removeChildren();
-      sky.addChild(...this.createRockClusters())
+      sky.addChild(...this.createRockClusters());
     }
 
-    sky.children.forEach((cluster: PIXI.Container) => {
-      cluster.children.forEach(rock => {
-        rock.angle += rock.rotationSpeed
-      })
-    })
-  }
+    sky.children.forEach(cluster => {
+      const clusterChildren = (cluster as any).children;
+
+      clusterChildren.forEach(rock => {
+        rock.angle += rock.rotationSpeed;
+      });
+    });
+  };
 
   private createSkySection(y = 0) {
     const sky = new PIXI.Container();
@@ -51,20 +53,22 @@ export class SceneryRocks {
     cluster.x = -300 + random.number(window.innerWidth + 300);
     cluster.y = random.number(window.innerHeight);
     const clusterWidth = random.number({ min: 30, max: window.innerWidth / 3 });
-    const clusterHeight = random.number({ min: 30, max: window.innerHeight / 2 });
+    const clusterHeight = random.number({
+      min: 30,
+      max: window.innerHeight / 2
+    });
 
     const numRocks = random.number({ min: 3, max: 5 });
     const rocks = new Array(numRocks).fill({}).map(() => {
       let rock = PIXI.Sprite.from(images.rock);
       rock.angle = random.number(360);
-      rock.scale.set(0.1 + Math.random() * 0.35)
+      rock.scale.set(0.1 + Math.random() * 0.35);
       rock.anchor.set(0.5);
 
-      rock.hitArea
       rock.x = random.number(clusterWidth);
       rock.y = random.number(clusterHeight);
       rock.tint = 0x464646;
-      rock.rotationSpeed = random.number({ min: -3, max: 3 }) || 1;
+      (rock as any).rotationSpeed = random.number({ min: -3, max: 3 }) || 1;
 
       return rock;
     });
@@ -72,6 +76,5 @@ export class SceneryRocks {
     cluster.addChild(...rocks);
 
     return cluster;
-  }
-};
-
+  };
+}

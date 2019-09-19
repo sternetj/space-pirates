@@ -3,9 +3,9 @@ export default function keyboard(value) {
     value: value,
     isDown: false,
     isUp: true,
-    press: undefined,
-    release: undefined,
-    
+    press: () => {},
+    release: () => {},
+
     downHandler: event => {
       if (event.key === key.value) {
         if (key.isUp && key.press) key.press();
@@ -23,23 +23,19 @@ export default function keyboard(value) {
         event.preventDefault();
       }
     },
-    
+
     unsubscribe: () => {
       window.removeEventListener("keydown", downListener);
       window.removeEventListener("keyup", upListener);
     }
   };
 
-    //Attach event listeners
+  //Attach event listeners
   const downListener = key.downHandler.bind(key);
   const upListener = key.upHandler.bind(key);
 
-  window.addEventListener(
-    "keydown", downListener, false
-  );
-  window.addEventListener(
-    "keyup", upListener, false
-  );
+  window.addEventListener("keydown", downListener, false);
+  window.addEventListener("keyup", upListener, false);
 
   return key;
 }
