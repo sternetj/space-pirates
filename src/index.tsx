@@ -13,9 +13,19 @@ const store = createStore({
   }
 });
 
-render(
+const launch = () => {
+  let element = document.getElementById("root");
+
+  if (element) {
+    render(
   <StoreProvider store={store}>
     <Game />
   </StoreProvider>,
-  document.getElementById("root")
+  element
 );
+  } else {
+    setTimeout(launch, 50);
+  }
+}
+
+launch()

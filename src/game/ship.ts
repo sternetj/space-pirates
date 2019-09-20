@@ -16,9 +16,77 @@ export class Ship {
   }
 
   public update() {
+    let vx = (this.ship.vx || 0);
+    let distance = Math.abs(this.ship.x - (window.innerWidth - this.ship.width) / 2);
+    let dx = distance;
+
+    if (vx == 0) {
+      if (dx > 0.5 && !this.ship.gx) {
+        this.ship.gx = [];
+        const direction = this.ship.x > (window.innerWidth - this.ship.width) / 2 ? -1 : 1;
+
+        // Needs refactoring
+        // go towards center
+        while (dx > 5 / 6 * distance) {
+          dx -= 6;
+          this.ship.gx.push(direction * 6);
+        }
+        while (dx > 2 / 3 * distance) {
+          dx -= 7;
+          this.ship.gx.push(direction * 7);
+        }
+        while (dx > 1 / 3 * distance) {
+          dx -= 8;
+          this.ship.gx.push(direction * 8);
+        }
+
+        while (dx > 0) {
+          dx -= 7;
+          this.ship.gx.push(direction * 7);
+        }
+
+        // Go 1/8 the ship width away from center in the current direction
+        while (dx > (1 / 8) * -this.ship.width) {
+          dx -= 6;
+          this.ship.gx.push(direction * 6);
+        }
+
+        while (dx > (1 / 2) * -this.ship.width) {
+          dx -= 5;
+          this.ship.gx.push(direction * 5);
+        }
+
+        // Go back towards center
+        while (dx > (1 / 8) * -this.ship.width) {
+          dx -= 4;
+          this.ship.gx.push(direction * 4);
+        }
+
+        while (dx < 0) {
+          dx += 3;
+          this.ship.gx.push(-direction * 3);
+        }
+
+        // Go 1/16 the ship width away from center in the current direction
+        while (dx < (1 / 16) * this.ship.width) {
+          dx += 2;
+          this.ship.gx.push(-direction * 2);
+        }
+
+        // Go to center
+        while (dx > 0) {
+          dx -= 1;
+          this.ship.gx.push(direction * 1);
+        }
+      }
+    } else {
+      this.ship.gx = undefined;
+    }
+
+    const gx = (this.ship.gx || []).shift() || 0;
     this.ship.position.set(
-      this.ship.x + (this.ship.vx || 0),
-      this.ship.y + (this.ship.vy || 0)
+      this.ship.x + vx + gx,
+      this.ship.y
     );
   }
 
@@ -28,6 +96,7 @@ export class Ship {
 
     ship.y = window.innerHeight - 220;
     ship.x = (window.innerWidth - ship.width) / 2;
+    ship.gx = [];
 
     return ship;
   }
