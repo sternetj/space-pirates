@@ -2,7 +2,24 @@ import * as PIXI from "pixi.js";
 import * as images from "../assets";
 import keyboard from "./keyboard";
 
-type VelocitySprite = PIXI.Sprite & { vx?: number, vy?: number };
+type VelocitySprite = PIXI.Sprite & {
+  vx?: number,
+  acc?: number,
+  gx?: any[],
+  stopAcc?: "left" | "right";
+};
+
+
+let vx = 0,
+  m = 0.1,    // Ball mass in kg
+  // Ship radius in cm, or pixels.
+  r = 20,
+  dt = 0.02,  // Time step.
+  e = -0.3,   // Coefficient of restitution ("bounciness")
+  rho = 1.2,  // Density of air. Try 1000 for water.
+  C_d = 0.47, // Coeffecient of drag for a ball
+  // Frontal area of the ball; divided by 10000 to compensate for the 1px = 1cm relation
+  A = Math.PI * r * r / 10000;
 
 export class Ship {
   private ship: VelocitySprite;
@@ -15,88 +32,92 @@ export class Ship {
     this.children = [this.ship];
   }
 
+
   public update() {
-    let vx = (this.ship.vx || 0);
-    let distance = Math.abs(this.ship.x - (window.innerWidth - this.ship.width) / 2);
-    let dx = distance;
+    let {
+      acc: ax = 0,
+      width,
+      x,
+      stopAcc
+    } = this.ship
+    const screenCenter = (window.innerWidth - width) / 2;
 
-    if (vx == 0) {
-      if (dx > 0.5 && !this.ship.gx) {
-        this.ship.gx = [];
-        const direction = this.ship.x > (window.innerWidth - this.ship.width) / 2 ? -1 : 1;
-
-        // Needs refactoring
-        // go towards center
-        while (dx > 5 / 6 * distance) {
-          dx -= 6;
-          this.ship.gx.push(direction * 6);
-        }
-        while (dx > 2 / 3 * distance) {
-          dx -= 7;
-          this.ship.gx.push(direction * 7);
-        }
-        while (dx > 1 / 3 * distance) {
-          dx -= 8;
-          this.ship.gx.push(direction * 8);
-        }
-
-        while (dx > 0) {
-          dx -= 7;
-          this.ship.gx.push(direction * 7);
-        }
-
-        // Go 1/8 the ship width away from center in the current direction
-        while (dx > (1 / 8) * -this.ship.width) {
-          dx -= 6;
-          this.ship.gx.push(direction * 6);
-        }
-
-        while (dx > (1 / 2) * -this.ship.width) {
-          dx -= 5;
-          this.ship.gx.push(direction * 5);
-        }
-
-        // Go back towards center
-        while (dx > (1 / 8) * -this.ship.width) {
-          dx -= 4;
-          this.ship.gx.push(direction * 4);
-        }
-
-        while (dx < 0) {
-          dx += 3;
-          this.ship.gx.push(-direction * 3);
-        }
-
-        // Go 1/16 the ship width away from center in the current direction
-        while (dx < (1 / 16) * this.ship.width) {
-          dx += 2;
-          this.ship.gx.push(-direction * 2);
-        }
-
-        // Go to center
-        while (dx > 0) {
-          dx -= 1;
-          this.ship.gx.push(direction * 1);
-        }
-      }
-    } else {
-      this.ship.gx = undefined;
+    let gravity = -10
+    if (x < screenCenter) {
+      gravity = -gravity;
     }
 
-    const gx = (this.ship.gx || []).shift() || 0;
+    if (stopAcc) {
+      const sign = stopAcc === "left" ? 1 : -1;
+      ax += sign * 4;
+
+      if (ax === 0) {
+        this.ship.stopAcc = undefined
+        ax = 0;
+      }
+
+      this.ship.acc = ax;
+    }
+
+
+    if (ax) {
+      gravity = ax
+    }
+
+
+
+    let fx = 0;
+
+    /* Weight force, which only affects the y-direction (because that's the direction gravity points). */
+    fx += m * gravity;
+
+    /* Air resistance force; this would affect both x- and y-directions, but we're only looking at the y-axis in this example. */
+    fx += -1 * 0.5 * rho * C_d * A * vx * vx;
+
+    /* Verlet integration for the y-direction */
+    let dx = vx * dt + (0.5 * ax * dt * dt);
+    /* The following line is because the math assumes meters but we're assuming 1 cm per pixel, so we need to scale the results */
+    x += dx * 100;
+    let new_ax = fx / m;
+    let avg_ax = 0.5 * (new_ax + ax);
+    vx += avg_ax * dt;
+
+    /* Let's do very simple collision detection */
+    if (x + width + 10 > window.innerWidth && vx > 0) {
+      /* This is a simplification of impulse-momentum collision response. e should be a negative number, which will change the velocity's direction. */
+      vx *= e;
+      /* Move the ball back a little bit so it's not still "stuck" in the wall. */
+      x = window.innerWidth - 10 - width;
+    } else if (x < 10 && vx < 0) {
+      vx *= e;
+      /* Move the ball back a little bit so it's not still "stuck" in the wall. */
+      x = 10;
+    }
+
+
+    let distance = Math.abs(x - screenCenter);
+    if (!ax && Math.abs(vx) < 0.2 && distance < 3) {
+      vx = 0;
+      x = screenCenter
+    } else if (!ax && distance < screenCenter / 3) {
+      vx *= Math.min(Math.log2(distance / (screenCenter) + 1) + .68, 0.99)
+      // } else if (!ax && distance < screenCenter/3) {
+      //   vx *= distance/screenCenter + .8
+    }
+
     this.ship.position.set(
-      this.ship.x + vx + gx,
+      x,
       this.ship.y
     );
   }
 
   private createShip(): VelocitySprite {
-    const ship = PIXI.Sprite.from(images.ship);
+    const ship: VelocitySprite = PIXI.Sprite.from(images.ship);
     ship.scale = new PIXI.Point(0.3, 0.3);
 
     ship.y = window.innerHeight - 220;
     ship.x = (window.innerWidth - ship.width) / 2;
-    ship.gx = [];
+    ship.vx = 0;
 
     return ship;
   }
@@ -108,8 +129,9 @@ export class Ship {
     //Left arrow key `press` method
     left.press = () => {
       //Change the ship's velocity when the key is pressed
-      this.ship.vx = -8;
-      this.ship.vy = 0;
+      // this.ship.vx = -8;
+      this.ship.acc = -12;
+      this.ship.stopAcc = undefined;
     };
 
     //Left arrow key `release` method
@@ -117,19 +139,19 @@ export class Ship {
       //If the left arrow has been released, and the right arrow isn't down,
       //and the ship isn't moving vertically:
       //Stop the ship
-      if (!right.isDown && this.ship.vy === 0) {
-        this.ship.vx = 0;
+      if (!right.isDown) {
+        this.ship.stopAcc = "left";
       }
     };
 
     //Right
     right.press = () => {
-      this.ship.vx = 8;
-      this.ship.vy = 0;
+      this.ship.acc = 12;
+      this.ship.stopAcc = undefined;
     };
     right.release = () => {
-      if (!left.isDown && this.ship.vy === 0) {
-        this.ship.vx = 0;
+      if (!left.isDown) {
+        this.ship.stopAcc = "right";
       }
     };
   }
