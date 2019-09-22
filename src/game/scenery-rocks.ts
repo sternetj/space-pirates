@@ -18,7 +18,7 @@ export class SceneryRocks {
   }
 
   private updateSkySection = (sky: PIXI.Container) => {
-    sky.y += 4;
+    sky.y += 3.5;
 
     if (sky.y > window.innerHeight) {
       sky.y = -2 * window.innerHeight;
@@ -58,23 +58,30 @@ export class SceneryRocks {
       max: window.innerHeight / 2
     });
 
-    const numRocks = random.number({ min: 3, max: 5 });
-    const rocks = new Array(numRocks).fill({}).map(() => {
-      let rock = PIXI.Sprite.from(images.rock);
-      rock.angle = random.number(360);
-      rock.scale.set(0.1 + Math.random() * 0.35);
-      rock.anchor.set(0.5);
-
-      rock.x = random.number(clusterWidth);
-      rock.y = random.number(clusterHeight);
-      rock.tint = 0x464646;
-      (rock as any).rotationSpeed = random.number({ min: -3, max: 3 }) || 1;
-
-      return rock;
-    });
+    const numRocks = random.number({ min: 3, max: 7 });
+    const rocks = new Array(numRocks).fill({}).map(() => this.createRock(clusterWidth, clusterHeight));
 
     cluster.addChild(...rocks);
 
     return cluster;
+  };
+
+  private createRock = (clusterWidth, clusterHeight) => {
+    let radius = random.number({ min: 12, max: 20 });
+    let points: PIXI.Point[] = [];
+    for (let k = 0; k < 5; k++) {
+      points.push(
+        new PIXI.Point(
+          radius * Math.cos(k * 2 * Math.PI / 5),
+          radius * Math.sin(k * 2 * Math.PI / 5)
+        )
+      )
+    }
+
+    const rock = new PIXI.Graphics().beginFill(0x000c1a).drawPolygon(points).endFill();
+    (rock as any).rotationSpeed = 0;
+    rock.x = random.number(clusterWidth);
+    rock.y = random.number(clusterHeight);
+    return rock;
   };
 }
