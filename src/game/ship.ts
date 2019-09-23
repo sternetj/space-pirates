@@ -9,6 +9,9 @@ type VelocitySprite = PIXI.Sprite & {
   stopAcc?: "left" | "right";
 };
 
+const shipAcc = 7.5;
+const springConst = 0.04;
+
 
 let vx = 0,
   m = 0.1,    // Ball mass in kg
@@ -38,38 +41,19 @@ export class Ship {
       acc: ax = 0,
       width,
       x,
-      stopAcc
     } = this.ship
     const screenCenter = (window.innerWidth - width) / 2;
 
-    let gravity = -10
-    if (x < screenCenter) {
-      gravity = -gravity;
-    }
-
-    if (stopAcc) {
-      const sign = stopAcc === "left" ? 1 : -1;
-      ax += sign * 4;
-
-      if (ax === 0) {
-        this.ship.stopAcc = undefined
-        ax = 0;
-      }
-
-      this.ship.acc = ax;
-    }
-
+    let gravity = -2 * springConst * (x - screenCenter);
 
     if (ax) {
       gravity = ax
     }
 
-
-
     let fx = 0;
 
     /* Weight force, which only affects the y-direction (because that's the direction gravity points). */
-    fx += m * gravity;
+    fx += m * (gravity + ax);
 
     /* Air resistance force; this would affect both x- and y-directions, but we're only looking at the y-axis in this example. */
     fx += -1 * 0.5 * rho * C_d * A * vx * vx;
@@ -101,8 +85,6 @@ export class Ship {
       x = screenCenter
     } else if (!ax && distance < screenCenter / 3) {
       vx *= Math.min(Math.log2(distance / (screenCenter) + 1) + .68, 0.99)
-      // } else if (!ax && distance < screenCenter/3) {
-      //   vx *= distance/screenCenter + .8
     }
 
     this.ship.position.set(
@@ -116,7 +98,7 @@ export class Ship {
     ship.scale = new PIXI.Point(0.3, 0.3);
 
     ship.y = window.innerHeight - 220;
-    ship.x = (window.innerWidth - ship.width) / 2;
+    ship.x = (window.innerWidth - ship.width)/2;
     ship.vx = 0;
 
     return ship;
@@ -130,8 +112,7 @@ export class Ship {
     left.press = () => {
       //Change the ship's velocity when the key is pressed
       // this.ship.vx = -8;
-      this.ship.acc = -12;
-      this.ship.stopAcc = undefined;
+      this.ship.acc = -shipAcc;
     };
 
     //Left arrow key `release` method
@@ -140,18 +121,17 @@ export class Ship {
       //and the ship isn't moving vertically:
       //Stop the ship
       if (!right.isDown) {
-        this.ship.stopAcc = "left";
+        this.ship.acc = 0;
       }
     };
 
     //Right
     right.press = () => {
-      this.ship.acc = 12;
-      this.ship.stopAcc = undefined;
+      this.ship.acc = shipAcc;
     };
     right.release = () => {
       if (!left.isDown) {
-        this.ship.stopAcc = "right";
+        this.ship.acc = 0;
       }
     };
   }

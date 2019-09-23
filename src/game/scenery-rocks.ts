@@ -78,10 +78,11 @@ export class SceneryRocks {
       )
     }
 
-    const rock = new PIXI.Graphics().beginFill(0x000c1a).drawPolygon(points).endFill();
+    const rock = new PIXI.Graphics().beginFill(0x001d4d).drawPolygon(points).endFill();
     (rock as any).rotationSpeed = 0;
     rock.x = random.number(clusterWidth);
     rock.y = random.number(clusterHeight);
+    rock.tint = 0x777777;
     return rock;
   };
 }
