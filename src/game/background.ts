@@ -3,32 +3,26 @@ import * as PIXI from "pixi.js";
 import { random } from "faker";
 
 export class Background {
-  private container: PIXI.Container;
   public children: PIXI.DisplayObject[] = [];
 
   constructor() {
-    this.container = this.createTrailContainer();
-    this.children = [this.container];
+    this.children = [
+      this.createBackgroundGradient(),
+      this.createHorizon()
+    ];
   }
 
   public update() {};
 
-  private createTrailContainer() {
-    const sky = new PIXI.Container();
-    const stars = new Array(1)
-      .fill({})
-      .map(() => this.createTrail(random.number(500)));
-    stars.forEach(star => sky.addChild(star));
-    return sky;
-  }
-
-  private createTrail(offset = 0) {
+  private createBackgroundGradient() {
     const quality = 2048;
     const canvas = document.createElement("canvas");
     canvas.width = quality;
     canvas.height = 1;
 
     const ctx = canvas.getContext("2d");
+
+    if (!ctx) return;
 
     // use canvas2d API to create gradient
     const grd = (ctx as any).createLinearGradient(0, 0, quality, 0);
@@ -39,8 +33,8 @@ export class Background {
       `rgba(0, 7, 26, 0.8)`
     );
 
-    (ctx as any).fillStyle = grd;
-    (ctx as any).fillRect(0, 0, quality, 1);
+    ctx.fillStyle = grd;
+    ctx.fillRect(0, 0, quality, 1);
 
     const texture = PIXI.Texture.from(canvas);
     const sprite = new PIXI.Sprite(texture);
@@ -50,6 +44,33 @@ export class Background {
     sprite.width = length;
     sprite.x = window.innerWidth;
     sprite.y = 0;
+
+    return sprite;
+  }
+
+  private createHorizon() {
+    const canvas = document.createElement("canvas");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight * 2/5;
+
+    const ctx = canvas.getContext("2d");
+
+    if (!ctx) return;
+
+    // use canvas2d API to create gradient
+    const grd = ctx.createRadialGradient(window.innerWidth/2, window.innerHeight/4, 0, window.innerWidth/2, window.innerHeight/4, window.innerHeight/4);
+    grd.addColorStop(0, `rgba(255, 255, 255, 0.45)`);
+    grd.addColorStop(1, "rgba(0,0,0,0)");
+
+    ctx.fillStyle = grd;
+    ctx.fillRect(-window.innerWidth, 0, 2*window.innerWidth, window.innerHeight/4);
+
+    const texture = PIXI.Texture.from(canvas);
+    const sprite = new PIXI.Sprite(texture);
+    sprite.height = window.innerWidth;
+    sprite.width = 2*window.innerHeight;
+    sprite.x = -window.innerWidth;
+    sprite.y = 5/7 * window.innerHeight;
 
     return sprite;
   }
