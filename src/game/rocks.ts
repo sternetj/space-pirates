@@ -15,6 +15,11 @@ export class Rocks {
     this.scene.children.forEach(rock => {
       rock.y += 6;
 
+      rock.angle =
+        rock.angle >= 360
+          ? (rock.angle = 0)
+          : rock.angle + (rock as any).rotationSpeed;
+
       if (rock.y - (rock as any).radius > window.innerHeight) {
         this.scene.removeChild(rock);
 
@@ -73,6 +78,7 @@ export class Rocks {
     rockContainer.y = random.number({ min: -window.innerHeight, max: -radius });
     (rockContainer as any).radius = radius;
     rockContainer.angle = random.number(360);
+    (rockContainer as any).rotationSpeed = 1 + random.number(3);
 
     return rockContainer;
   };
