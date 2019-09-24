@@ -1,16 +1,16 @@
 import app from "./app";
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 
-import { useStoreState, useStoreActions } from "easy-peasy";
 import SoundPlayer from "./sound-player";
 
-export default () => {
-  const volume = useStoreState(state => state.volume.level);
-  const updateVolume = useStoreActions(
-    actions => (actions as any).volume.change
-  );
+import Button from "@atlaskit/button";
+import VidVolumeMutedIcon from "@atlaskit/icon/glyph/vid-volume-muted";
+import VidVolumeFullIcon from "@atlaskit/icon/glyph/vid-volume-full";
 
-  newSoundPlayer(volume);
+export default () => {
+  const [isMuted, setIsMuted] = useState(false);
+
+  newSoundPlayer(isMuted);
 
   return (
     <Fragment>
@@ -22,29 +22,34 @@ export default () => {
       <div
         style={{
           position: "absolute",
-          bottom: "0px",
-          right: "0px",
+          bottom: "16px",
+          right: "16px",
           display: "flex",
           flexDirection: "column",
           alignItems: "center"
         }}
       >
-        <span style={{ color: "white", marginBottom: "8px" }}>Volume</span>
-        <div>
-          <button onClick={() => updateVolume(0.1)}>+</button>
-          <button
-            style={{ marginLeft: "8px" }}
-            onClick={() => updateVolume(-0.1)}
-          >
-            -
-          </button>
-        </div>
+        <Button
+          onClick={() => setIsMuted(prev => !prev)}
+          appearance="primary"
+          style={{ marginBottom: "8px" }}
+        >
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <span style={{ marginRight: "8px" }}>Volume</span>{" "}
+            {isMuted ? (
+              <VidVolumeMutedIcon size="medium" label="" />
+            ) : (
+              <VidVolumeFullIcon size="medium" label="" />
+            )}
+          </div>
+        </Button>
       </div>
     </Fragment>
   );
 };
 
-const newSoundPlayer = (volume: number) => {
-  SoundPlayer.ship.stop();
-  SoundPlayer.ship.play({ loop: true, volume });
+const newSoundPlayer = (isMuted: boolean) => {
+  isMuted
+    ? SoundPlayer.ship.stop()
+    : SoundPlayer.ship.play({ loop: true, volume: 0.1 });
 };
