@@ -27,12 +27,17 @@ app.stage.addChild(...spaceTrails.children);
 app.stage.addChild(...ship.children);
 app.stage.addChild(...rocks.children);
 
+let gameOver = false;
 app.ticker.add(delta => {
+  if (gameOver) return;
+  
   ship.update();
   sRocks.update();
   sky.update();
   spaceTrails.update();
   rocks.update();
+
+  gameOver = ship.detectCollisions(rocks.children[0].children)
 });
 
 export default app;

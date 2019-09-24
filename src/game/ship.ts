@@ -12,7 +12,6 @@ type VelocitySprite = PIXI.Sprite & {
 const shipAcc = 7.5;
 const springConst = 0.04;
 
-
 let vx = 0,
   m = 0.1,    // Ball mass in kg
   // Ship radius in cm, or pixels.
@@ -91,6 +90,10 @@ export class Ship {
       x,
       this.ship.y
     );
+  }
+
+  public detectCollisions(objects: PIXI.DisplayObject[]) {
+    return false;
   }
 
   private createShip(): VelocitySprite {
