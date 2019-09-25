@@ -13,31 +13,42 @@ app.renderer.view.style.display = "block";
 app.renderer.autoResize = true;
 app.renderer.resize(window.innerWidth, window.innerHeight);
 
-const ship = new Ship();
-const background = new Background();
-const sky = new Sky();
-const sRocks = new SceneryRocks();
-const spaceTrails = new SpaceTrails();
-const rocks = new Rocks();
+let ticker: (...params: any[]) => any;
+app.newGame = () => {
+  const ship = new Ship();
+  const background = new Background();
+  const sky = new Sky();
+  const sRocks = new SceneryRocks();
+  const spaceTrails = new SpaceTrails();
+  const rocks = new Rocks();
 
-app.stage.addChild(...background.children);
-app.stage.addChild(...sky.children);
-app.stage.addChild(...sRocks.children);
-app.stage.addChild(...spaceTrails.children);
-app.stage.addChild(...ship.children);
-app.stage.addChild(...rocks.children);
+  app.stage.removeChildren();
+  app.stage.addChild(...background.children);
+  app.stage.addChild(...sky.children);
+  app.stage.addChild(...sRocks.children);
+  app.stage.addChild(...spaceTrails.children);
+  app.stage.addChild(...ship.children);
+  app.stage.addChild(...rocks.children);
 
-let gameOver = false;
-app.ticker.add(delta => {
-  if (gameOver) return;
-  
-  ship.update();
-  sRocks.update();
-  sky.update();
-  spaceTrails.update();
-  rocks.update();
+  let gameOver = false;
 
-  gameOver = ship.detectCollisions(rocks.children[0].children)
-});
+  app.ticker.remove(ticker);
+  ticker = delta => {
+    if (gameOver) return;
+
+    ship.update();
+    sRocks.update();
+    sky.update();
+    spaceTrails.update();
+    rocks.update();
+
+    gameOver = ship.detectCollisions(rocks.children[0].children);
+    if (app.onGameOver && gameOver) {
+      app.onGameOver();
+    }
+  }
+
+  app.ticker.add(ticker);
+}
 
 export default app;

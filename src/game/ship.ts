@@ -9,6 +9,8 @@ type VelocitySprite = PIXI.Sprite & {
   stopAcc?: "left" | "right";
 };
 
+type CircleObject = PIXI.DisplayObject & { radius?: number }
+
 const shipAcc = 7.5;
 const springConst = 0.04;
 
@@ -93,7 +95,37 @@ export class Ship {
   }
 
   public detectCollisions(objects: PIXI.DisplayObject[]) {
-    return false;
+    return objects.some(obj => {
+      if (this.isCircle(obj)) {
+        return this.detectCollisionWithCircle(obj);
+      }
+
+      return false;
+    });
+  }
+
+  private isCircle<T extends CircleObject>(obj: T): obj is Required<T> {
+    return obj.radius !== undefined && Number.isInteger(obj.radius);
+  }
+
+  private detectCollisionWithCircle(circle: CircleObject) {
+    const { radius = 0 } = circle;
+    let { x, y, width, height } = this.ship;
+    // y += 50;
+
+    const closestX = Math.min(Math.max(circle.x, x), x + width);
+    const closestY = Math.min(Math.max(circle.y, y), y + height);
+
+    // Calculate the distance between the circle's center and this closest point
+    const distanceX = circle.x - closestX;
+    const distanceY = circle.y - closestY;
+
+    // If the distance is less than the circle's radius, an intersection occurs
+    const distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
+    const cos36 = 0.80901699437;
+    const altitude = radius * cos36 - 10;
+    
+    return distanceSquared < (altitude * altitude);
   }
 
   private createShip(): VelocitySprite {
@@ -101,7 +133,7 @@ export class Ship {
     ship.scale = new PIXI.Point(0.3, 0.3);
 
     ship.y = window.innerHeight - 220;
-    ship.x = (window.innerWidth - ship.width)/2;
+    ship.x = (window.innerWidth - ship.width) / 2;
     ship.vx = 0;
 
     return ship;

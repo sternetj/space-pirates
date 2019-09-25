@@ -1,5 +1,5 @@
 import app from "./app";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 
 import SoundPlayer from "./sound-player";
 
@@ -9,8 +9,21 @@ import VidVolumeFullIcon from "@atlaskit/icon/glyph/vid-volume-full";
 
 export default () => {
   const [isMuted, setIsMuted] = useState(false);
+  const [isGameOver, setGameOver] = useState(false);
 
   newSoundPlayer(isMuted);
+
+  useEffect(() => {
+    app.onGameOver = () => {
+      setGameOver(true);
+    }
+    app.newGame();
+  }, []);
+
+  const newGame = () => {
+    app.newGame();
+    setGameOver(false);
+  }
 
   return (
     <Fragment>
@@ -44,6 +57,24 @@ export default () => {
           </div>
         </Button>
       </div>
+      { isGameOver && <div
+        style={{
+          position: "absolute",
+          bottom: "50%",
+          right: "calc(50% - 57px)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center"
+        }}
+      >
+        <Button
+          onClick={() => newGame()}
+          appearance="primary"
+          style={{ background: "red" }}
+        >
+          <div style={{ display: "flex", alignItems: "center" }}>New Game</div>
+        </Button>
+      </div>}
     </Fragment>
   );
 };
