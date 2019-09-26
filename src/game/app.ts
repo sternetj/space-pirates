@@ -5,6 +5,7 @@ import { SceneryRocks } from "./scenery-rocks";
 import { SpaceTrails } from "./space-trails";
 import { Rocks } from "./rocks";
 import { Background } from "./background";
+import { Intro } from "./intro-screen";
 
 const app = new PIXI.Application();
 
@@ -21,6 +22,7 @@ app.newGame = () => {
   const sRocks = new SceneryRocks();
   const spaceTrails = new SpaceTrails();
   const rocks = new Rocks();
+  const intro = new Intro();
 
   app.stage.removeChildren();
   app.stage.addChild(...background.children);
@@ -29,6 +31,7 @@ app.newGame = () => {
   app.stage.addChild(...spaceTrails.children);
   app.stage.addChild(...ship.children);
   app.stage.addChild(...rocks.children);
+  // app.stage.addChild(...intro.children)
 
   let gameOver = false;
 
