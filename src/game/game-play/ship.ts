@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
-import * as images from "../assets";
-import keyboard from "./keyboard";
+import * as images from "../../assets";
+import keyboard from "../keyboard";
 
 type VelocitySprite = PIXI.Sprite & {
   vx?: number,

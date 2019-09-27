@@ -1,17 +1,18 @@
 import * as PIXI from "pixi.js";
 import * as images from "../../assets";
 import { random } from "faker";
+import { Scene } from "../scene";
 
-export class Intro {
-  public children: PIXI.Container[] = [];
-
-  constructor() {
-    this.children = [
-      this.createPirate()
-    ];
-  }
+export class Intro extends Scene {
+  public children: PIXI.Container[] = [
+    this.createPirate()
+  ];
 
   public update() {
+  }
+
+  public nextScene(app: PIXI.Application) {
+
   }
 
   private createPirate() {

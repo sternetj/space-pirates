@@ -1,11 +1,7 @@
 import * as PIXI from "pixi.js";
-import { Ship } from "./ship";
-import { Sky } from "./sky";
-import { SceneryRocks } from "./scenery-rocks";
-import { SpaceTrails } from "./space-trails";
-import { Rocks } from "./rocks";
-import { Background } from "./background";
+import { GamePlay } from "./game-play";
 import { Intro } from "./intro-screen";
+import { Scene } from "./scene";
 
 const app = new PIXI.Application();
 
@@ -16,21 +12,11 @@ app.renderer.resize(window.innerWidth, window.innerHeight);
 
 let ticker: (...params: any[]) => any;
 app.newGame = () => {
-  const ship = new Ship();
-  const background = new Background();
-  const sky = new Sky();
-  const sRocks = new SceneryRocks();
-  const spaceTrails = new SpaceTrails();
-  const rocks = new Rocks();
+  const gamePlay: Scene = new GamePlay();
   const intro = new Intro();
 
   app.stage.removeChildren();
-  app.stage.addChild(...background.children);
-  app.stage.addChild(...sky.children);
-  app.stage.addChild(...sRocks.children);
-  app.stage.addChild(...spaceTrails.children);
-  app.stage.addChild(...ship.children);
-  app.stage.addChild(...rocks.children);
+  app.stage.addChild(...gamePlay.children);
   // app.stage.addChild(...intro.children)
 
   let gameOver = false;
@@ -39,13 +25,9 @@ app.newGame = () => {
   ticker = delta => {
     if (gameOver) return;
 
-    ship.update();
-    sRocks.update();
-    sky.update();
-    spaceTrails.update();
-    rocks.update();
+    gamePlay.update();
 
-    gameOver = ship.detectCollisions(rocks.children[0].children);
+    gameOver = gamePlay.goToNextScene();
     if (app.onGameOver && gameOver) {
       app.onGameOver();
     }
