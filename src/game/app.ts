@@ -11,29 +11,38 @@ app.renderer.autoResize = true;
 app.renderer.resize(window.innerWidth, window.innerHeight);
 
 let ticker: (...params: any[]) => any;
-app.newGame = () => {
-  const gamePlay: Scene = new GamePlay();
-  const intro = new Intro();
+let currentScene = new Intro();
+app.stage.addChild(...currentScene.children);
 
-  app.stage.removeChildren();
-  app.stage.addChild(...gamePlay.children);
-  // app.stage.addChild(...intro.children)
+app.newGame = () => {
+  const scenes: Scene[] = [new GamePlay()];
 
   let gameOver = false;
 
   app.ticker.remove(ticker);
   ticker = delta => {
     if (gameOver) return;
-
-    gamePlay.update();
-
-    gameOver = gamePlay.goToNextScene();
-    if (app.onGameOver && gameOver) {
-      app.onGameOver();
+    if (!currentScene) {
+      currentScene = scenes.shift();
     }
-  }
+
+    currentScene.update();
+
+    const goToNext = currentScene.goToNextScene();
+    if (goToNext) {
+      app.stage.removeChildren();
+      currentScene = scenes.shift();
+
+      if (!currentScene) {
+        app.onGameOver();
+        gameOver = true;
+      } else {
+        app.stage.addChild(...currentScene.children);
+      }
+    }
+  };
 
   app.ticker.add(ticker);
-}
+};
 
 export default app;
