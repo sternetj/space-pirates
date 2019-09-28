@@ -21,8 +21,11 @@ export class StartScreen extends Scene {
 
   constructor() {
     super();
-    this.addKeyHandlers();
     background.alpha = 0
+  }
+
+  public mount() {
+    this.addKeyHandlers();
   }
 
   public update() {

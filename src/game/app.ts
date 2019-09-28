@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import { GamePlay } from "./game-play-scene";
 import { StartScreen } from "./start-screen";
+import { IntroScreen } from "./intro-screen";
 import { Scene } from "./scene";
 
 const app = new PIXI.Application();
@@ -11,10 +12,13 @@ app.renderer.autoResize = true;
 app.renderer.resize(window.innerWidth, window.innerHeight);
 
 let ticker: (...params: any[]) => any;
-let defaultScene: Scene = { children: [], update: () => undefined, goToNextScene: () => true };
+let defaultScene: Scene = { children: [], update: () => undefined, goToNextScene: () => true, mount: () => {} };
 
 app.newGame = (firstGame: boolean) => {
-  const scenes: Scene[] = [defaultScene, ...(firstGame ? [new StartScreen()] : []), new GamePlay()];
+  const scenes: Scene[] = [defaultScene, ...(firstGame ? [
+    new StartScreen(),
+    new IntroScreen()
+    ] : []), new GamePlay()];
   let currentScene = scenes.shift();
   let gameOver = false;
 
@@ -37,6 +41,7 @@ app.newGame = (firstGame: boolean) => {
 
       if (currentScene) {
         app.stage.addChild(...currentScene.children);
+        currentScene.mount();
       }
     }
   };

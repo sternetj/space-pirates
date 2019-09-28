@@ -31,11 +31,12 @@ export class Ship {
 
   constructor() {
     this.ship = this.createShip();
-    this.addKeyHandlers();
-
     this.children = [this.ship];
   }
 
+  public mount() {
+    this.addKeyHandlers();
+  }
 
   public update() {
     let {
