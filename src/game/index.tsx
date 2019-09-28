@@ -17,7 +17,7 @@ export default () => {
     app.onGameOver = () => {
       setGameOver(true);
     }
-    app.newGame();
+    app.newGame(true);
   }, []);
 
   const newGame = () => {
