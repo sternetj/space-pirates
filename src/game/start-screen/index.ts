@@ -4,7 +4,7 @@ import { Scene } from "../scene";
 import keyboard from "../keyboard";
 import { background } from "../background";
 
-export class Intro extends Scene {
+export class StartScreen extends Scene {
   private logo = this.createLogo();
   private message = this.createMessage();
   private about = this.createAbout();

@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import { GamePlay } from "./game-play-scene";
-import { Intro } from "./intro-screen";
+import { StartScreen } from "./start-screen";
 import { Scene } from "./scene";
 
 const app = new PIXI.Application();
@@ -14,7 +14,7 @@ let ticker: (...params: any[]) => any;
 let defaultScene: Scene = { children: [], update: () => undefined, goToNextScene: () => true };
 
 app.newGame = (firstGame: boolean) => {
-  const scenes: Scene[] = [defaultScene, ...(firstGame ? [new Intro()] : []), new GamePlay()];
+  const scenes: Scene[] = [defaultScene, ...(firstGame ? [new StartScreen()] : []), new GamePlay()];
   let currentScene = scenes.shift();
   let gameOver = false;
 
