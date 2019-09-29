@@ -1,9 +1,10 @@
 import PIXI from "pixi.js";
 
-export abstract class Scene {
+export class Scene {
   public children: PIXI.DisplayObject[] = [];
 
   public mount(): void {}
-  public abstract update(): void;
-  public abstract goToNextScene(): boolean;
+  public destroy(): void {}
+  public update(): void {};
+  public goToNextScene(): boolean { return true; };
 }

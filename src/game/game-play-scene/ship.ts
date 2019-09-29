@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import * as images from "../../assets";
 import keyboard from "../keyboard";
+import touch from "../touch";
 
 type VelocitySprite = PIXI.Sprite & {
   vx?: number,
@@ -28,6 +29,7 @@ let vx = 0,
 export class Ship {
   private ship: VelocitySprite;
   public children: PIXI.DisplayObject[] = [];
+  private handlers: { unsubscribe: Function }[] = [];
 
   constructor() {
     this.ship = this.createShip();
@@ -35,7 +37,11 @@ export class Ship {
   }
 
   public mount() {
-    this.addKeyHandlers();
+    this.handlers = this.addKeyHandlers();
+  }
+
+  public unMount() {
+    this.handlers.forEach(handler => handler.unsubscribe());
   }
 
   public update() {
@@ -142,34 +148,29 @@ export class Ship {
 
   private addKeyHandlers() {
     let left = keyboard("ArrowLeft"),
-      right = keyboard("ArrowRight");
+      right = keyboard("ArrowRight"),
+      touchLeft = touch("left"),
+      touchRight = touch("right");
 
-    //Left arrow key `press` method
-    left.press = () => {
-      //Change the ship's velocity when the key is pressed
-      // this.ship.vx = -8;
+    touchLeft.press = left.press = () => {
       this.ship.acc = -shipAcc;
     };
-
-    //Left arrow key `release` method
-    left.release = () => {
-      //If the left arrow has been released, and the right arrow isn't down,
-      //and the ship isn't moving vertically:
-      //Stop the ship
-      if (!right.isDown) {
+    touchLeft.release = left.release = () => {
+      if (!right.isDown && !touchRight.isDown) {
         this.ship.acc = 0;
       }
     };
 
-    //Right
-    right.press = () => {
+    touchRight.press = right.press = () => {
       this.ship.acc = shipAcc;
     };
-    right.release = () => {
-      if (!left.isDown) {
+    touchRight.release = right.release = () => {
+      if (!left.isDown && !touchLeft.isDown) {
         this.ship.acc = 0;
       }
     };
+
+    return [right, left, touchRight, touchLeft]
   }
 };
 

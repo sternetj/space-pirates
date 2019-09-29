@@ -12,7 +12,7 @@ app.renderer.autoResize = true;
 app.renderer.resize(window.innerWidth, window.innerHeight);
 
 let ticker: (...params: any[]) => any;
-let defaultScene: Scene = { children: [], update: () => undefined, goToNextScene: () => true, mount: () => {} };
+let defaultScene = new Scene();
 
 app.newGame = (firstGame: boolean) => {
   const scenes: Scene[] = [defaultScene, ...(firstGame ? [
@@ -37,6 +37,7 @@ app.newGame = (firstGame: boolean) => {
     const goToNext = currentScene.goToNextScene();
     if (goToNext) {
       app.stage.removeChildren();
+      currentScene.destroy();
       currentScene = scenes.shift();
 
       if (currentScene) {

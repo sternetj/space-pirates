@@ -25,6 +25,10 @@ export class GamePlay extends Scene {
     this.ship.mount();
   }
 
+  public unMount() {
+    this.ship.unMount();
+  }
+
   public update() {
     this.ship.update();
     this.sRocks.update();

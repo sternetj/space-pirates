@@ -2,12 +2,14 @@ import * as PIXI from "pixi.js";
 import * as images from "../../assets";
 import { Scene } from "../scene";
 import keyboard from "../keyboard";
+import touch from "../touch";
 import { background } from "../background";
 
 export class StartScreen extends Scene {
   private logo = this.createLogo();
   private message = this.createMessage();
   private about = this.createAbout();
+  private handlers: { unsubscribe: Function }[] = [];
   
   private startGame = false;
   public children: PIXI.Container[] = [
@@ -25,7 +27,11 @@ export class StartScreen extends Scene {
   }
 
   public mount() {
-    this.addKeyHandlers();
+    this.handlers = this.addKeyHandlers();
+  }
+
+  public unMount() {
+    this.handlers.forEach(handler => handler.unsubscribe());
   }
 
   public update() {
@@ -101,8 +107,12 @@ export class StartScreen extends Scene {
   }
 
   private addKeyHandlers() {
-    keyboard(" ").press = () => {
+    const press = touch();
+    const space = keyboard(" ");
+    space.release = press.release = () => {
       this.startGame = true;
     };
+
+    return [press, space];
   }
 }
