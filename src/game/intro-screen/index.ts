@@ -28,7 +28,7 @@ export class IntroScreen extends Scene {
     this.handlers = this.addKeyHandlers();
   }
 
-  public unMount() {
+  public destroy() {
     this.handlers.forEach(handler => handler.unsubscribe());
   }
 

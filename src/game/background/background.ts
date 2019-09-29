@@ -2,11 +2,12 @@ import * as PIXI from "pixi.js";
 
 import { random } from "faker";
 
-export class Background {
-  public children: PIXI.DisplayObject[] = [];
-
+export class Background extends PIXI.Container {
   constructor() {
-    this.children = [this.createBackgroundGradient(), this.createHorizon()];
+    super();
+     
+    this.addChild(this.createBackgroundGradient());
+    this.addChild(this.createHorizon());
   }
 
   public update() {}

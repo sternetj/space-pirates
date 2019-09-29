@@ -13,20 +13,21 @@ export class GamePlay extends Scene {
   private sRocks = new SceneryRocks();
   private spaceTrails = new SpaceTrails();
   private rocks = new Rocks();
-  
-  public children = background.children.concat(
-    this.sRocks.children,
-    this.spaceTrails.children,
-    this.ship.children,
-    this.rocks.children
-  );
+
+  public children = [
+    background,
+    ...this.sRocks.children,
+    ...this.spaceTrails.children,
+    ...this.ship.children,
+    ...this.rocks.children
+  ];
 
   public mount() {
     this.ship.mount();
   }
 
-  public unMount() {
-    this.ship.unMount();
+  public destroy() {
+    this.ship.destroy();
   }
 
   public update() {
