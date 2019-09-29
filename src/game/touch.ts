@@ -40,8 +40,8 @@ export default function keyboard(value?: "left" | "right") {
   const downListener = key.downHandler.bind(key);
   const upListener = key.upHandler.bind(key);
 
-  document.getElementsByTagName("canvas")[0].addEventListener("touchstart", () => downListener, false);
-  document.getElementsByTagName("canvas")[0].addEventListener("touchend", () => upListener, false);
+  window.addEventListener("touchstart", () => downListener, false);
+  window.addEventListener("touchend", () => upListener, false);
 
   return key;
 }
