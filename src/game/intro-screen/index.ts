@@ -10,7 +10,6 @@ export class IntroScreen extends Scene {
   private message = this.createMessage();
   private messageContainer = this.createMessageContainer();
   private handlers: { unsubscribe: Function }[] = [];
-
   private startGame = false;
   public children: PIXI.Container[] = [
     background,
@@ -21,12 +20,22 @@ export class IntroScreen extends Scene {
 
   private timer = 0;
 
+  constructor(private messageParts: string[]) {
+    super();
+  }
+
   public mount() {
     this.handlers = this.addKeyHandlers();
   }
 
   public unMount() {
     this.handlers.forEach(handler => handler.unsubscribe());
+  }
+
+  public update() {
+    if (this.timer++ % 2 === 0 && this.message.text.length < this.messageParts.join("").length) {
+      this.message.text += this.messageParts[this.message.text.length]
+    }
   }
 
   public goToNextScene() {
@@ -44,7 +53,7 @@ export class IntroScreen extends Scene {
 
   private createMessage() {
     const message = new PIXI.Text(
-      "Need some goofy piratey text here\n\n\n\n\n\n\n\nPress SPACE to continue...",
+      "",
       {
         fontFamily: "Arial",
         fontSize: 24,
@@ -53,7 +62,7 @@ export class IntroScreen extends Scene {
       }
     );
 
-    message.x = 90;
+    message.x = window.innerWidth/2 - 215;
     message.y = ((2 / 3) * window.innerHeight - 300) / 2 + 35;
 
     return message;

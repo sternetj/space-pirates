@@ -15,10 +15,21 @@ let ticker: (...params: any[]) => any;
 let defaultScene = new Scene();
 
 app.newGame = (firstGame: boolean) => {
-  const scenes: Scene[] = [defaultScene, ...(firstGame ? [
-    new StartScreen(),
-    new IntroScreen()
-    ] : []), new GamePlay()];
+  const scenes: Scene[] = [
+    defaultScene,
+    ...(firstGame
+      ? [
+          new StartScreen(),
+          new IntroScreen(
+            "Need some goofy piratey text here\n\n\n\n\n\n\n\n"
+              .split("")
+              .concat("Press SPACE to continue...")
+          )
+        ]
+      : []),
+    new GamePlay(),
+    new IntroScreen("Yar! Good try matey!\n\nBetter luck next time!".split(""))
+  ];
   let currentScene = scenes.shift();
   let gameOver = false;
 
