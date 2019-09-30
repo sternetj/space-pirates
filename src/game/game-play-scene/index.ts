@@ -19,7 +19,7 @@ export class GamePlay extends Scene {
     ...this.spaceTrails.children,
     ...this.ship.children,
     ...this.rocks.children,
-    ...this.score.children
+    this.score
   ];
 
   public mount() {

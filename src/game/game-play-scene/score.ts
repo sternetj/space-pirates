@@ -1,7 +1,6 @@
 import * as PIXI from "pixi.js";
 
-export class Score {
-  public children: PIXI.Container[] = [];
+export class Score extends PIXI.Container {
   private scene = new PIXI.Container();
 
   public score = 0;
@@ -10,7 +9,9 @@ export class Score {
   public message = this.createMessage();
 
   constructor() {
-    this.children = [this.scene, this.message];
+    super();
+
+    this.addChild(this.message);
   }
 
   public update() {
@@ -30,8 +31,8 @@ export class Score {
   private createMessage() {
     const message = new PIXI.Text("", {
       fontFamily: "Arial",
-      fontSize: 36,
-      fill: 0xcc5500,
+      fontSize: 2,
+      fill: 0x0dffff,
       align: "center"
     });
 
