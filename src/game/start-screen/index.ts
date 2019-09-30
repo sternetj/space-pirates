@@ -4,26 +4,27 @@ import { Scene } from "../scene";
 import keyboard from "../keyboard";
 import touch from "../touch";
 import { background } from "../background";
+import isMobile from "is-mobile";
 
 export class StartScreen extends Scene {
   private logo = this.createLogo();
   private message = this.createMessage();
   private about = this.createAbout();
   private handlers: { unsubscribe: Function }[] = [];
-  
+
   private startGame = false;
   public children: PIXI.Container[] = [
     background,
     this.logo,
     this.message,
-    this.about,
+    this.about
   ];
 
   private timer = 0;
 
   constructor() {
     super();
-    background.alpha = 0
+    background.alpha = 0;
   }
 
   public mount() {
@@ -77,12 +78,15 @@ export class StartScreen extends Scene {
   }
 
   private createMessage() {
-    const message = new PIXI.Text("Press SPACE to launch...", {
-      fontFamily: "Arial",
-      fontSize: 24,
-      fill: 0xcc5500,
-      align: "center"
-    });
+    const message = new PIXI.Text(
+      `${isMobile() ? "Tap anywhere" : "Press SPACE"} to launch...`,
+      {
+        fontFamily: "Arial",
+        fontSize: 24,
+        fill: 0xcc5500,
+        align: "center"
+      }
+    );
 
     message.visible = false;
     message.x = (window.innerWidth - message.width) / 2;
@@ -95,13 +99,13 @@ export class StartScreen extends Scene {
     const message = new PIXI.Text("By Chris Pratt & Teddy Sterne", {
       fontFamily: "Arial",
       fontSize: 18,
-      fill: 0x0DFFFF,
+      fill: 0x0dffff,
       align: "center"
     });
 
     message.alpha = 0;
     message.x = (window.innerWidth - message.width) / 2;
-    message.y = 5/6 * window.innerHeight - message.height / 2;
+    message.y = (5 / 6) * window.innerHeight - message.height / 2;
 
     return message;
   }

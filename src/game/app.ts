@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import { GamePlay } from "./game-play-scene";
 import { StartScreen } from "./start-screen";
-import { IntroScreen } from "./intro-screen";
+import { MessageScreen } from "./message-screen";
 import { Scene } from "./scene";
 
 const app = new PIXI.Application() as any;
@@ -20,15 +20,13 @@ app.newGame = (firstGame: boolean) => {
     ...(firstGame
       ? [
           new StartScreen(),
-          new IntroScreen(
-            `Yo ho ho!  Avast and whatnot.  Ye be\nhelpin' me pirate... I mean, pilot me\nship through deep space!  So hold onto \nyer booty and dodge these space rocks!\n\n\n\n\n`
-              .split("")
-              .concat("Press SPACE to continue...")
+          new MessageScreen(
+            `Yo ho ho!  Avast and whatnot.\nYe be helpin' me pirate... I mean,\npilot me ship through deep\nspace!\n\nSo hold onto yer booty and\ndodge these space rocks!`
           )
         ]
       : []),
     new GamePlay(),
-    new IntroScreen("Yar! Good try matey!\n\nBetter luck next time!".split(""))
+    new MessageScreen("Yar! Good try matey!\n\nBetter luck next time!", "to play again")
   ];
   let currentScene = scenes.shift();
   let gameOver = false;
@@ -38,7 +36,7 @@ app.newGame = (firstGame: boolean) => {
     if (gameOver) return;
 
     if (!currentScene) {
-      app.onGameOver();
+      app.newGame();
       gameOver = true;
       return;
     }
