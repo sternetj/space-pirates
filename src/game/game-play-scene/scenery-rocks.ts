@@ -1,5 +1,4 @@
 import * as PIXI from "pixi.js";
-import * as images from "../assets";
 import { random } from "faker";
 
 export class SceneryRocks {
@@ -59,7 +58,9 @@ export class SceneryRocks {
     });
 
     const numRocks = random.number({ min: 3, max: 7 });
-    const rocks = new Array(numRocks).fill({}).map(() => this.createRock(clusterWidth, clusterHeight));
+    const rocks = new Array(numRocks)
+      .fill({})
+      .map(() => this.createRock(clusterWidth, clusterHeight));
 
     cluster.addChild(...rocks);
 
@@ -72,13 +73,16 @@ export class SceneryRocks {
     for (let k = 0; k < 5; k++) {
       points.push(
         new PIXI.Point(
-          radius * Math.cos(k * 2 * Math.PI / 5),
-          radius * Math.sin(k * 2 * Math.PI / 5)
+          radius * Math.cos((k * 2 * Math.PI) / 5),
+          radius * Math.sin((k * 2 * Math.PI) / 5)
         )
-      )
+      );
     }
 
-    const rock = new PIXI.Graphics().beginFill(0x001d4d).drawPolygon(points).endFill();
+    const rock = new PIXI.Graphics()
+      .beginFill(0x001d4d)
+      .drawPolygon(points)
+      .endFill();
     (rock as any).rotationSpeed = 0;
     rock.x = random.number(clusterWidth);
     rock.y = random.number(clusterHeight);

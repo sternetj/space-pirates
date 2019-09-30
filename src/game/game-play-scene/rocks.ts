@@ -1,5 +1,4 @@
 import * as PIXI from "pixi.js";
-import * as images from "../assets";
 import { random } from "faker";
 
 export class Rocks {

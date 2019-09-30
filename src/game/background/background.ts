@@ -1,11 +1,9 @@
 import * as PIXI from "pixi.js";
 
-import { random } from "faker";
-
 export class Background extends PIXI.Container {
   constructor() {
     super();
-     
+
     this.addChild(this.createBackgroundGradient());
     this.addChild(this.createHorizon());
   }

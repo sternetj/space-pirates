@@ -4,7 +4,7 @@ import { StartScreen } from "./start-screen";
 import { IntroScreen } from "./intro-screen";
 import { Scene } from "./scene";
 
-const app = new PIXI.Application();
+const app = new PIXI.Application() as any;
 
 app.renderer.view.style.position = "absolute";
 app.renderer.view.style.display = "block";
@@ -21,7 +21,7 @@ app.newGame = (firstGame: boolean) => {
       ? [
           new StartScreen(),
           new IntroScreen(
-            "Need some goofy piratey text here\n\n\n\n\n\n\n\n"
+            `Yo ho ho!  Avast and whatnot.  Ye be\nhelpin' me pirate... I mean, pilot me\nship through deep space!  So hold onto \nyer booty and dodge these space rocks!\n\n\n\n\n`
               .split("")
               .concat("Press SPACE to continue...")
           )

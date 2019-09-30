@@ -33,8 +33,11 @@ export class IntroScreen extends Scene {
   }
 
   public update() {
-    if (this.timer++ % 2 === 0 && this.message.text.length < this.messageParts.join("").length) {
-      this.message.text += this.messageParts[this.message.text.length]
+    if (
+      this.timer++ % 2 === 0 &&
+      this.message.text.length < this.messageParts.join("").length
+    ) {
+      this.message.text += this.messageParts[this.message.text.length];
     }
   }
 
@@ -52,17 +55,14 @@ export class IntroScreen extends Scene {
   }
 
   private createMessage() {
-    const message = new PIXI.Text(
-      "",
-      {
-        fontFamily: "Arial",
-        fontSize: 24,
-        fill: 0xcc5500,
-        align: "left"
-      }
-    );
+    const message = new PIXI.Text("", {
+      fontFamily: "Arial",
+      fontSize: 24,
+      fill: 0xcc5500,
+      align: "left"
+    });
 
-    message.x = window.innerWidth/2 - 215;
+    message.x = window.innerWidth / 2 - 215;
     message.y = ((2 / 3) * window.innerHeight - 300) / 2 + 35;
 
     return message;
