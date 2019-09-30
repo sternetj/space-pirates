@@ -6,9 +6,17 @@ export default function keyboard(value?: "left" | "right") {
     press: () => {},
     release: () => {},
     shouldFire: (event: TouchEvent) => {
-      return !value ||
-      (value === "left" && event.touches[0].clientX < window.innerWidth / 2) ||
-      (value === "right" && event.touches[0].clientX > window.innerWidth / 2)
+      const touch = event.touches[0];
+
+      if (!value) return true;
+      if (touch) {
+        return (
+          (value === "left" && touch.pageX < window.innerWidth / 2) ||
+          (value === "right" && touch.pageX > window.innerWidth / 2)
+        );
+      }
+
+      return false;
     },
 
     downHandler: (event: TouchEvent) => {
@@ -21,12 +29,10 @@ export default function keyboard(value?: "left" | "right") {
     },
 
     upHandler: (event: TouchEvent) => {
-      if (key.shouldFire(event)) {
-        if (key.isDown && key.release) key.release();
-        key.isDown = false;
-        key.isUp = true;
-        event.preventDefault();
-      }
+      if (key.isDown && key.release) key.release();
+      key.isDown = false;
+      key.isUp = true;
+      event.preventDefault();
     },
 
     unsubscribe: () => {
@@ -35,15 +41,12 @@ export default function keyboard(value?: "left" | "right") {
     }
   };
 
-
   //Attach event listeners
   const downListener = key.downHandler.bind(key);
   const upListener = key.upHandler.bind(key);
 
-  window.addEventListener("touchstart", () => downListener, false);
-  window.addEventListener("touchend", () => upListener, false);
+  window.addEventListener("touchstart", downListener, false);
+  window.addEventListener("touchend", upListener, false);
 
   return key;
 }
-
-

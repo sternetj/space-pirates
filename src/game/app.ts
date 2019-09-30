@@ -47,7 +47,6 @@ app.newGame = (firstGame: boolean) => {
 
     const goToNext = currentScene.goToNextScene();
     if (goToNext) {
-      debugger;
       currentScene.destroy();
       app.stage.removeChildren();
       currentScene = scenes.shift();
