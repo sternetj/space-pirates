@@ -31,7 +31,7 @@ export class Score extends PIXI.Container {
   private createMessage() {
     const message = new PIXI.Text("", {
       fontFamily: "Arial",
-      fontSize: 2,
+      fontSize: 24,
       fill: 0x0dffff,
       align: "center"
     });

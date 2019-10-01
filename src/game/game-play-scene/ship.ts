@@ -27,7 +27,7 @@ let vx = 0,
   A = Math.PI * r * r / 10000;
 
 export class Ship {
-  private ship: VelocitySprite;
+  public ship: VelocitySprite;
   public children: PIXI.DisplayObject[] = [];
   private handlers: { unsubscribe: Function }[] = [];
 
