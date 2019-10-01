@@ -1,0 +1,33 @@
+{
+  "name": "Space Pirates",
+  "short_name": "Space Pirates",
+  "icons": [{
+    "src": "https://c.staticblitz.com/assets/media/client/icons/ui/blue-lightning-b6f0711fda280ec6bd873c9391fc89c4.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    }, {
+      "src": "https://c.staticblitz.com/assets/media/client/icons/ui/blue-lightning-b6f0711fda280ec6bd873c9391fc89c4.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    }, {
+      "src": "https://c.staticblitz.com/assets/media/client/icons/ui/blue-lightning-b6f0711fda280ec6bd873c9391fc89c4.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    }, {
+      "src": "https://c.staticblitz.com/assets/media/client/icons/ui/blue-lightning-b6f0711fda280ec6bd873c9391fc89c4.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }, {
+      "src": "https://c.staticblitz.com/assets/media/client/icons/ui/blue-lightning-b6f0711fda280ec6bd873c9391fc89c4.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    }, {
+      "src": "https://c.staticblitz.com/assets/media/client/icons/ui/blue-lightning-b6f0711fda280ec6bd873c9391fc89c4.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }],
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#CC5500"
+}
