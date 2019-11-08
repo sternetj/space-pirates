@@ -1,5 +1,13 @@
 import * as PIXI from "pixi.js";
 import { random } from "faker";
+import { isMobile as isMobileDevice } from "is-mobile";
+
+const isMobile = isMobileDevice();
+const maxRocks = isMobile ? 8 : 12;
+const rockRadiusLimits = {
+  min: isMobile ? 14 : 18,
+  max: isMobile ? 39 : 55,
+};
 
 export class Rocks {
   public children: PIXI.Container[] = [];
@@ -7,7 +15,7 @@ export class Rocks {
 
   constructor() {
     this.children = [this.scene];
-    this.scene.addChild(...new Array(12).fill({}).map(this.createRock));
+    this.scene.addChild(...new Array(maxRocks).fill({}).map(this.createRock));
   }
 
   public update() {
@@ -22,7 +30,7 @@ export class Rocks {
       if (rock.y - (rock as any).radius > window.innerHeight) {
         this.scene.removeChild(rock);
 
-        if (this.scene.children.length < 12) {
+        if (this.scene.children.length < maxRocks) {
           const shouldCreate = Math.random() > 0.5;
           if (this.scene.children.length < 5 || shouldCreate) {
             this.scene.addChild(this.createRock());
@@ -33,7 +41,7 @@ export class Rocks {
   }
 
   private createRock = () => {
-    let radius = random.number({ min: 18, max: 50 });
+    let radius = random.number(rockRadiusLimits);
     let points: PIXI.Point[] = [];
     for (let k = 0; k < 5; k++) {
       points.push(
